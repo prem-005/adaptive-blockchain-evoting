@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: evoting_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: evoting_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    networks:
+      - evoting_network
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: evoting_backend
+    environment:
+      DATABASE_URL: mysql+pymysql://root:password@mysql:3306/evoting_db
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      BLOCKCHAIN_RPC_URL: http://host.docker.internal:8545
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mysql
+    networks:
+      - evoting_network
+    volumes:
+      - ./backend:/app
+
+  # Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: evoting_frontend
+    ports:
+      - "3000:3000"
+    environment:
+      REACT_APP_API_URL: http://localhost:8000/api
+    networks:
+      - evoting_network
+    depends_on:
+      - backend
+
+volumes:
+  mysql_data:
+
+networks:
+  evoting_network:
+    driver: bridge

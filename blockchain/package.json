@@ -1,0 +1,20 @@
+{
+  "name": "adaptive-blockchain-evoting-contracts",
+  "version": "1.0.0",
+  "description": "Solidity smart contracts for e-voting system",
+  "main": "index.js",
+  "scripts": {
+    "compile": "hardhat compile",
+    "deploy": "hardhat run scripts/deploy.js --network localhost",
+    "test": "hardhat test",
+    "node": "hardhat node"
+  },
+  "keywords": ["blockchain", "voting", "ethereum"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^3.0.0",
+    "hardhat": "^2.19.0",
+    "dotenv": "^16.3.1"
+  }
+}
